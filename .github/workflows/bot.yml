@@ -1,0 +1,46 @@
+name: Remote Jobs Bot
+
+on:
+  schedule:
+    - cron: "*/30 * * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: bot-${{ github.workflow }}
+  cancel-in-progress: false
+
+jobs:
+  run-bot:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Restore state cache
+        uses: actions/cache/restore@v4
+        with:
+          path: state.json
+          key: bot-state-v1-${{ github.run_id }}
+          restore-keys: |
+            bot-state-v1-
+
+      - name: Run bot
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          BOT_STATE_PATH: state.json
+          BOT_REQUIRE_REMOTE: "true"
+          BOT_KEYWORDS: "developer,software engineer,backend,frontend,full stack,fullstack,devops,site reliability,sre,qa engineer,mobile developer,ios developer,android developer,cloud engineer,platform engineer,machine learning engineer,data engineer"
+          BOT_LOG_LEVEL: INFO
+        run: python -m src.main
+
+      - name: Save state cache
+        if: always()
+        uses: actions/cache/save@v4
+        with:
+          path: state.json
+          key: bot-state-v1-${{ github.run_id }}
