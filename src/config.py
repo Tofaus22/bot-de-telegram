@@ -48,6 +48,7 @@ class Config:
     max_offers_per_run: int = 30
     telegram_message_limit: int = 4000
     log_level: str = "INFO"
+    only_junior: bool = True
 
     @classmethod
     def from_env(cls) -> Config:
@@ -63,6 +64,7 @@ class Config:
             max_offers_per_run=_int_env("BOT_MAX_OFFERS", 30),
             telegram_message_limit=_int_env("BOT_TG_LIMIT", 4000),
             log_level=os.environ.get("BOT_LOG_LEVEL", "INFO"),
+            only_junior=_bool_env("BOT_ONLY_JUNIOR", True),
         )
 
     def can_send_telegram(self) -> bool:

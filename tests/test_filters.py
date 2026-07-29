@@ -2,14 +2,18 @@ from __future__ import annotations
 
 import unittest
 
-from src.filters import apply_filters
+from src.filters import (
+    apply_filters,
+    junior_include_pattern,
+    senior_exclude_pattern,
+)
 from src.models import JobOffer
 
 
 def _offer(**kw: object) -> JobOffer:
     base: dict[str, object] = dict(
         id="1",
-        title="Senior Backend Developer",
+        title="Junior Backend Developer",
         company="Acme",
         location="Remote, EU",
         modality="Remote",
@@ -68,13 +72,45 @@ class FilterTests(unittest.TestCase):
             [_offer(company="Python Corp")],
             keywords=("python",),
             require_remote=False,
+            level_include=None,
+            level_exclude=None,
         )
         self.assertEqual(len(res.accepted), 1)
 
     def test_empty_keywords_accept_all(self) -> None:
-        offers = [_offer(), _offer(id="2", title="X")]
+        offers = [_offer(), _offer(id="2", title="Junior Frontend Dev")]
         res = apply_filters(offers, keywords=(), require_remote=False)
         self.assertEqual(len(res.accepted), 2)
+
+    def test_junior_only_accepts_entry_level(self) -> None:
+        offers = [
+            _offer(id="1", title="Junior Backend Developer"),
+            _offer(id="2", title="Entry Level Engineer"),
+            _offer(id="3", title="Software Engineer (0-1 año)"),
+            _offer(id="4", title="Senior Backend Developer"),
+            _offer(id="5", title="Lead Engineer"),
+        ]
+        res = apply_filters(
+            offers,
+            keywords=(),
+            require_remote=False,
+            level_include=junior_include_pattern(),
+            level_exclude=senior_exclude_pattern(),
+        )
+        accepted_ids = sorted(o.id for o in res.accepted)
+        self.assertEqual(accepted_ids, ["1", "2", "3"])
+        self.assertEqual([r[1] for r in res.rejected], ["level-miss", "level-miss"])
+
+    def test_exclude_pattern_blocks_senior_when_junior_disabled(self) -> None:
+        res = apply_filters(
+            [_offer(title="Staff Software Engineer")],
+            keywords=(),
+            require_remote=False,
+            level_include=None,
+            level_exclude=senior_exclude_pattern(),
+        )
+        self.assertEqual(len(res.accepted), 0)
+        self.assertEqual(res.rejected[0][1], "level-miss")
 
 
 if __name__ == "__main__":

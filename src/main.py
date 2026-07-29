@@ -6,7 +6,7 @@ from collections.abc import Iterable
 
 from .config import Config
 from .dedupe import load_state, mark_many, select_new
-from .filters import apply_filters
+from .filters import apply_filters, junior_include_pattern, senior_exclude_pattern
 from .models import JobOffer
 from .sources.arbeitnow import ArbeitnowSource
 from .sources.base import Source
@@ -58,6 +58,8 @@ def run() -> int:
         offers,
         keywords=config.keywords,
         require_remote=config.require_remote,
+        level_include=junior_include_pattern() if config.only_junior else None,
+        level_exclude=senior_exclude_pattern(),
     )
     logger.info(
         "Filtered: %d accepted, %d rejected",
