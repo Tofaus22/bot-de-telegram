@@ -27,23 +27,23 @@ def _markdown_v2_header(count: int) -> str:
 
 def format_offer(offer: JobOffer) -> str:
     lines: list[str] = [
-        f"*{escape_markdown_v2(offer.title)}*",
-        f"Empresa: {escape_markdown_v2(offer.company)}",
-        f"Ubicación: {escape_markdown_v2(offer.location)}",
-        f"Modalidad: {escape_markdown_v2(offer.modality)}",
+        f"📌 {offer.title}",
+        f"Empresa: {offer.company}",
+        f"Ubicación: {offer.location}",
+        f"Modalidad: {offer.modality}",
     ]
     if offer.salary:
-        lines.append(f"Salario: {escape_markdown_v2(offer.salary)}")
-    lines.append(f"Fuente: {escape_markdown_v2(offer.source)}")
-    lines.append(f"Fecha: {escape_markdown_v2(offer.published_at or 'N/D')}")
-    lines.append(f"🔗 {escape_markdown_v2(offer.url)}")
+        lines.append(f"Salario: {offer.salary}")
+    lines.append(f"Fuente: {offer.source}")
+    lines.append(f"Fecha: {offer.published_at or 'N/D'}")
+    lines.append(f"🔗 {offer.url}")
     return "\n".join(lines)
 
 
 def build_message(offers: list[JobOffer], *, limit: int) -> list[str]:
     if not offers:
         return []
-    header = _markdown_v2_header(len(offers))
+    header = f"📢 Ofertas remotas nuevas ({len(offers)})\n\n"
     chunks: list[str] = []
     current = header
     for offer in offers:
@@ -102,7 +102,6 @@ def send_messages(config: Config, messages: Iterable[str]) -> int:
                 {
                     "chat_id": chat_id,
                     "text": part,
-                    "parse_mode": "MarkdownV2",
                     "disable_web_page_preview": True,
                 }
             ).encode("utf-8")

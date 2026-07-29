@@ -43,10 +43,10 @@ class FormatOfferTests(unittest.TestCase):
         )
         text = format_offer(offer)
         self.assertIn("Senior Dev", text)
-        self.assertIn("Acme \\(Remote\\)", text)
-        self.assertIn("https://example\\.com/1\\)", text)
+        self.assertIn("Acme (Remote)", text)
+        self.assertIn("https://example.com/1)", text)
         self.assertIn("Salario: 100k", text)
-        self.assertIn("🔗 https://example\\.com/1\\)", text)
+        self.assertIn("🔗 https://example.com/1)", text)
         self.assertNotIn("[Ver oferta]", text)
 
     def test_omits_salary_when_none(self) -> None:
@@ -84,7 +84,7 @@ class BuildMessageTests(unittest.TestCase):
         msgs = build_message([offer], limit=4000)
         self.assertEqual(len(msgs), 1)
         self.assertIn("Ofertas remotas nuevas", msgs[0])
-        self.assertIn("\\(1\\)", msgs[0])
+        self.assertIn("(1)", msgs[0])
 
     def test_splits_when_exceeds_limit(self) -> None:
         offers = [
