@@ -83,7 +83,8 @@ class BuildMessageTests(unittest.TestCase):
         )
         msgs = build_message([offer], limit=4000)
         self.assertEqual(len(msgs), 1)
-        self.assertIn("(1)", msgs[0])
+        self.assertIn("Ofertas remotas nuevas", msgs[0])
+        self.assertIn("\\(1\\)", msgs[0])
 
     def test_splits_when_exceeds_limit(self) -> None:
         offers = [

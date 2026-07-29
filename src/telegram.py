@@ -20,6 +20,11 @@ def escape_markdown_v2(text: str) -> str:
     return "".join(f"\\{ch}" if ch in _MARKDOWN_V2_SPECIAL else ch for ch in text)
 
 
+def _markdown_v2_header(count: int) -> str:
+    raw = f"Ofertas remotas nuevas ({count})\n\n"
+    return "".join(f"\\{ch}" if ch in _MARKDOWN_V2_SPECIAL else ch for ch in raw)
+
+
 def format_offer(offer: JobOffer) -> str:
     lines: list[str] = [
         f"*{escape_markdown_v2(offer.title)}*",
@@ -38,7 +43,7 @@ def format_offer(offer: JobOffer) -> str:
 def build_message(offers: list[JobOffer], *, limit: int) -> list[str]:
     if not offers:
         return []
-    header = f"*Ofertas remotas nuevas* ({len(offers)})\n\n"
+    header = _markdown_v2_header(len(offers))
     chunks: list[str] = []
     current = header
     for offer in offers:
