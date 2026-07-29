@@ -87,7 +87,49 @@ def _matches_country(offer: JobOffer, country: str) -> bool:
     if not country:
         return True
     location = offer.location.lower()
-    return country.lower() in location
+    target = country.lower()
+    aliases: dict[str, tuple[str, ...]] = {
+        "latam": (
+            "latam",
+            "latin america",
+            "latinoamérica",
+            "latinoamerica",
+            "south america",
+            "hispanic america",
+            "americas",
+            "colombia",
+            "mexico",
+            "méxico",
+            "argentina",
+            "chile",
+            "peru",
+            "perú",
+            "brasil",
+            "brazil",
+            "uruguay",
+            "ecuador",
+            "venezuela",
+            "bolivia",
+            "paraguay",
+            "costa rica",
+            "panama",
+            "panamá",
+            "guatemala",
+            "honduras",
+            "el salvador",
+            "salvador",
+            "nicaragua",
+            "dominican",
+            "dominicana",
+            "puerto rico",
+            "cuba",
+        ),
+    }
+    tokens = aliases.get(target, (target,))
+    if any(t in location for t in tokens):
+        return True
+    worldwide_markers = ("worldwide", "anywhere", "global", "remote", "remote -")
+    return target in {"latam", "south america", "hispanic america"} and any(m in location for m in worldwide_markers)
 
 
 def apply_filters(
