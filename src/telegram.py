@@ -103,7 +103,11 @@ def send_messages(config: Config, messages: Iterable[str]) -> int:
                 with urllib.request.urlopen(req, timeout=config.request_timeout) as resp:
                     body = resp.read().decode("utf-8", "replace")
                     if '"ok":false' in body:
-                        raise RuntimeError(f"Telegram API error: {body[:200]}")
+                        raise RuntimeError(f"Telegram API error: {body[:300]}")
+            except urllib.error.HTTPError as exc:
+                err_body = exc.read().decode("utf-8", "replace") if hasattr(exc, "read") else ""
+                logger.error("Telegram HTTP %s: %s", exc.code, err_body[:300])
+                raise
             except (urllib.error.URLError, TimeoutError) as exc:
                 logger.error("Telegram send failed: %s", exc)
                 raise
