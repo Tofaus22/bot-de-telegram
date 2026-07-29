@@ -83,11 +83,19 @@ def _matches_level(
     return not any(m in lowered for m in senior_markers)
 
 
+def _matches_country(offer: JobOffer, country: str) -> bool:
+    if not country:
+        return True
+    location = offer.location.lower()
+    return country.lower() in location
+
+
 def apply_filters(
     offers: list[JobOffer],
     *,
     keywords: tuple[str, ...],
     require_remote: bool,
+    country: str = "",
     level_include: re.Pattern[str] | None = None,
     level_exclude: re.Pattern[str] | None = None,
 ) -> FilterResult:
@@ -97,6 +105,9 @@ def apply_filters(
     for offer in offers:
         if require_remote and not _is_remote(offer):
             rejected.append((offer, "not-remote"))
+            continue
+        if country and not _matches_country(offer, country):
+            rejected.append((offer, "country-miss"))
             continue
         if not _matches_keywords(offer, keywords):
             rejected.append((offer, "keyword-miss"))

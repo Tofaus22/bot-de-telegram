@@ -131,6 +131,7 @@ python -m src.main
 | `BOT_KEYWORDS` | Desarrollo de software | Lista separada por comas; filtra ofertas cuyo título/empresa/ubicación contenga alguna (case-insensitive). Vacío = sin filtro. |
 | `BOT_REQUIRE_REMOTE` | `true` | Si es `true`, solo se aceptan ofertas detectadas como remotas. |
 | `BOT_ONLY_JUNIOR` | `true` | Si es `true`, filtra ofertas junior/entry-level (0-3 años) y excluye senior/lead/principal/staff. |
+| `BOT_COUNTRY` | _(vacío)_ | Si se define (ej. `Colombia`), solo se aceptan ofertas cuya ubicación contenga ese país. Vacío = mundial. |
 | `BOT_REQUEST_TIMEOUT` | `20` | Timeout HTTP en segundos. |
 | `BOT_REQUEST_RETRIES` | `3` | Reintentos por fuente. |
 | `BOT_STATE_PATH` | `state.json` | Ruta del archivo de estado (dedupe). |

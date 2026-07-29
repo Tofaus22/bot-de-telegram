@@ -58,6 +58,7 @@ def run() -> int:
         offers,
         keywords=config.keywords,
         require_remote=config.require_remote,
+        country=config.country,
         level_include=junior_include_pattern() if config.only_junior else None,
         level_exclude=senior_exclude_pattern(),
     )
