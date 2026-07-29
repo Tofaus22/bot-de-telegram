@@ -25,14 +25,17 @@ _JUNIOR_INCLUDE_PATTERN = re.compile(
     r"1\s*[-–to]+\s*[1-3]\s*(?:años|years|yrs)?|"
     r"2\s*[-–to]+\s*[1-3]\s*(?:años|years|yrs)?|"
     r"0\s*[-–to]+\s*1\s*(?:año|year|yr)|"
-    r"1\s*[-–to]+\s*2\s*(?:años|years|yrs)?)\b",
+    r"1\s*[-–to]+\s*2\s*(?:años|years|yrs)?|"
+    r"less than\s+\d+\s+years?|menos de\s+\d+\s+años?)\b",
     re.IGNORECASE,
 )
 
 
 _SENIOR_EXCLUDE_PATTERN = re.compile(
     r"\b(senior|sr\.?|lead|principal|staff|architect|manager|head of|"
-    r"director|chief|expert|especialista)\b",
+    r"director|chief|expert|especialista|"
+    r"[5-9]\+\s*(?:años|years|yrs)|"
+    r"[5-9]\s*[-–]\s*\d+\s*(?:años|years|yrs))\b",
     re.IGNORECASE,
 )
 
@@ -61,7 +64,23 @@ def _matches_level(
         return False
     if include_pattern is None:
         return True
-    return bool(include_pattern.search(offer.title))
+    if include_pattern.search(offer.title):
+        return True
+    senior_markers = (
+        "senior",
+        "sr.",
+        "sr ",
+        "lead",
+        "principal",
+        "staff",
+        "architect",
+        "manager",
+        "head of",
+        "director",
+        "chief",
+    )
+    lowered = offer.title.lower()
+    return not any(m in lowered for m in senior_markers)
 
 
 def apply_filters(

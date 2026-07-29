@@ -5,9 +5,14 @@ from dataclasses import dataclass, field
 from pathlib import Path
 
 _DEFAULT_KEYWORDS = (
-    "developer,software engineer,backend,frontend,full stack,fullstack,devops,"
-    "site reliability,sre,qa engineer,mobile developer,ios developer,android developer,"
-    "cloud engineer,platform engineer,machine learning engineer,data engineer"
+    "developer,software engineer,software developer,backend,frontend,full stack,fullstack,"
+    "devops,site reliability,sre,qa engineer,mobile developer,ios developer,android developer,"
+    "cloud engineer,platform engineer,machine learning engineer,data engineer,engineer,"
+    "data analyst,data scientist,data analytics,business intelligence,bi analyst,"
+    "tech support,helpdesk,it support,systems administrator,network engineer,"
+    "security engineer,cybersecurity,information security,infosec,penetration tester,"
+    "scrum master,product manager,project manager,agile coach,programmer,"
+    "desarrollador,ingeniero,programador,soporte técnico,sistemas,redes,seguridad"
 )
 
 
