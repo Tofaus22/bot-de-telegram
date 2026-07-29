@@ -1,7 +1,9 @@
 from __future__ import annotations
 
+import io
 import json
 import logging
+import sys
 import urllib.error
 import urllib.request
 from collections.abc import Iterable
@@ -29,7 +31,7 @@ def format_offer(offer: JobOffer) -> str:
         lines.append(f"Salario: {escape_markdown_v2(offer.salary)}")
     lines.append(f"Fuente: {escape_markdown_v2(offer.source)}")
     lines.append(f"Fecha: {escape_markdown_v2(offer.published_at or 'N/D')}")
-    lines.append(f"[Ver oferta]({escape_markdown_v2(offer.url)})")
+    lines.append(f"🔗 {escape_markdown_v2(offer.url)}")
     return "\n".join(lines)
 
 
@@ -70,6 +72,12 @@ def _split_for_telegram(text: str, limit: int) -> list[str]:
 
 def send_messages(config: Config, messages: Iterable[str]) -> int:
     if config.dry_run:
+        stdout = sys.stdout
+        reconfigure = getattr(stdout, "reconfigure", None)
+        if callable(reconfigure):
+            reconfigure(encoding="utf-8")
+        elif hasattr(stdout, "buffer"):
+            sys.stdout = io.TextIOWrapper(stdout.buffer, encoding="utf-8")
         for msg in messages:
             print("--- TELEGRAM (dry-run) ---")
             print(msg)

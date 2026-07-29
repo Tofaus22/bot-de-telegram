@@ -46,6 +46,8 @@ class FormatOfferTests(unittest.TestCase):
         self.assertIn("Acme \\(Remote\\)", text)
         self.assertIn("https://example\\.com/1\\)", text)
         self.assertIn("Salario: 100k", text)
+        self.assertIn("🔗 https://example\\.com/1\\)", text)
+        self.assertNotIn("[Ver oferta]", text)
 
     def test_omits_salary_when_none(self) -> None:
         offer = JobOffer(
